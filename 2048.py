@@ -3,7 +3,7 @@ import random
 import math
 
 def keyPressed(event):
-    if canvas.data.gameOver == False:
+    if canvas.data.gameOver == False and canvas.data.win == False:
         if event.keysym == 'Down':
             moveDown()
             mergeDown()
@@ -89,7 +89,7 @@ def transpose(arr):
 def hasReached2048():
     # if you get to 2048 you win the game
     for i in range(len(canvas.data.board)):
-        if 2048 in canvas.data.board[i]:
+        if 32 in canvas.data.board[i]:
             canvas.data.win = True
 
 def isOver():
@@ -179,6 +179,28 @@ def mergeUp():
 ###########################
 ###########################
 
+def timerFired():
+    if canvas.data.gameOver:
+        drawGameOver()
+        return
+    elif canvas.data.win:
+        drawWinningPage()
+        return
+    drawBoard()
+    redrawAll()
+    delay = canvas.data.delayTime
+    canvas.after(delay, timerFired)
+
+def redrawAll():
+    if canvas.data.gameOver == True:
+        drawGameOver()
+        return
+    if canvas.data.win == True:
+        drawWinningPage()
+        return
+    else:
+        canvas.delete(ALL)
+        drawBoard()
 
 ################
 # draw the board
@@ -231,28 +253,6 @@ def drawGameOver():
     canvas.create_text(canvas.data.canvasWidth // 2 - 5, 
         canvas.data.canvasHeight + 10, text='Press \'r\' to restart')
 ####################
-def timerFired():
-    if canvas.data.gameOver:
-        drawGameOver()
-        return
-    elif canvas.data.win:
-        drawWinningPage()
-        return
-    drawBoard()
-    redrawAll()
-    delay = canvas.data.delayTime
-    canvas.after(delay, timerFired)
-
-def redrawAll():
-    if canvas.data.gameOver == True:
-        drawGameOver()
-        return
-    if canvas.data.win == True:
-        drawWinningPage()
-        return
-    else:
-        canvas.delete(ALL)
-        drawBoard()
 ####################
 def init():
     ## initialize different pieces
